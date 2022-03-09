@@ -1,24 +1,30 @@
-function dydt = wellMixedODEs(t,y,v,lam)
+function dydt = wellMixedODEs(t,y,v,lam,J)
 
-alphE = 0.641; %Encounter rate proportionality constant
+alphE = 0.083; %Encounter rate proportionality constant
+re = v*alphE;
 
-noBins = numel(y)/2;
+noBins = numel(y)/5;
 dydt = zeros(size(y));
 
-J = sum(y(noBins+1:end))/sum(y);
+for c = 0:4 %sensitive-attacker contact index
+    cInd = c*noBins;
+    for h = 1:noBins %hit index
+        if c == 0
+            encounterTerm = re * ((c+1) * y(cInd + h + noBins) * (1-J) - (4-c) * y(cInd + h) * J);
+        elseif c == 4
+            encounterTerm = re * ((5-c) * y(cInd + h - noBins) * J - c * y(cInd + h) * (1-J));
+        else
+            encounterTerm = re * ((c+1) * y(cInd + h + noBins) * (1-J) + (5-c) * y(cInd + h - noBins) * J - y(cInd + h) * (c * (1-J) + (4-c) * J));
+        end
 
-%Do the 'protected' bins
-for i = 1:noBins
-    dydt(i) = v*alphE*((1-J)*y(i+noBins) - J*y(i));
-end
+        if h == 1
+            hitTerm = c * lam * (- y(cInd + h));
+        elseif h == noBins
+            hitTerm = c * lam * (y(cInd + h - 1));
+        else
+            hitTerm = c * lam * (y(cInd + h - 1) - y(cInd + h));
+        end
 
-%Do the 'attacked' bins
-for i = 1:noBins
-    if i == 1
-        dydt(i+noBins) = v*(J*y(i) - (1-J)*y(i+noBins)) - lam*(y(i+noBins));
-    elseif i == noBins
-        dydt(i+noBins) = v*(J*y(i) - (1-J)*y(i+noBins)) + lam*(y(i+noBins-1));
-    else
-        dydt(i+noBins) = v*(J*y(i) - (1-J)*y(i+noBins)) + lam*(y(i+noBins-1) - y(i+noBins));
+        dydt(cInd + h) = encounterTerm + hitTerm;
     end
 end
