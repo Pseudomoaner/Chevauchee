@@ -8,7 +8,8 @@ b = bar(ax,y,'stacked','LineWidth',1.5);
 b(1).FaceColor = [255, 190, 11]/255;
 
 for i = 2:noBins
-    b(i).FaceColor = [0.8 + (i/(noBins+1))*0.2,i/(noBins+1),1];
+    colFac = i/(noBins+0.5);
+    b(i).FaceColor = [0.8+colFac*0.1,colFac*0.9,1-colFac*0.1];
 end
 
 ax.LineWidth = 1.5;
