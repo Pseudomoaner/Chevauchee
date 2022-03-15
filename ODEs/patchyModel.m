@@ -1,10 +1,10 @@
 clear all
 close all
 
-v = 0; %Cell velocity
+v = 0.1; %Cell velocity
 lam = 0.01; %CDI firing rate
-atFrac = 3/10; %Attacker fraction
-rho0 = 0.001; %Seeding density
+atFrac = 5/10; %Attacker fraction
+rho0 = 0.0001; %Seeding density
 w = 1; %Cell width
 noHitBins = 5;
 
