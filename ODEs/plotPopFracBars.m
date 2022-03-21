@@ -9,7 +9,7 @@ b(1).FaceColor = [255, 190, 11]/255;
 
 for i = 2:noBins
     colFac = i/(noBins+0.5);
-    b(i).FaceColor = [0.8+colFac*0.1,colFac*0.9,1-colFac*0.1];
+    b(i).FaceColor = [0.9,colFac*0.9,0.4+colFac*0.5];
 end
 
 ax.LineWidth = 1.5;

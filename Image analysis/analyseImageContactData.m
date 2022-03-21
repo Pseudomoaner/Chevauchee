@@ -1,15 +1,16 @@
 clear all
 close all
 
-Root = 'C:\Users\olijm\Desktop\SeanAna\Sample20x';
+Root = 'C:\Users\olijm\Desktop\SeanAna\Sample20x\OD1';
 
 BFchan = 'Channel_1';
 GFPchan = 'Channel_2';
 RFPchan = 'Channel_3';
 
 frameName = 'Frame_%04d.tif';
+outName = 'Analysis.mat';
 
-lowDensFrames = 1:10; %Frames that will be used to do the flatfield correction for the three channels
+lowDensFrames = 1:3; %Frames that will be used to do the flatfield correction for the three channels
 maxT = 31;
 pxSize = 0.227;
 neighSize = 5; %Approximate size of a single cell
@@ -36,6 +37,7 @@ BFseg = zeros(size(BFstore));
 GFPseg = zeros(size(BFstore));
 RFPseg = zeros(size(BFstore));
 
+packFracs = zeros(size(BFstore,3),1);
 pKs = zeros(size(BFstore,3),1);
 
 for i = 1:maxT
@@ -43,6 +45,9 @@ for i = 1:maxT
     [GFPseg(:,:,i),RFPseg(:,:,i)] = splitFluo(BFseg(:,:,i),GFPstore(:,:,i),RFPstore(:,:,i),GFPflat,RFPflat);
 
     pKs(i) = measureSensitiveKillerContactProb(GFPseg(:,:,i),RFPseg(:,:,i),pxSize); 
+    packFracs(i) = sum(sum(BFseg(:,:,i)))/(size(BFseg,1)*size(BFseg,2));
 
     fprintf('Image %i of %i done.\n',i,maxT)
 end
+
+save(fullfile(Root,outName),'BFseg','GFPseg','RFPseg','pKs','packFracs')
