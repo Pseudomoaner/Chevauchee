@@ -1,6 +1,6 @@
 function dydt = patchyODEs(t,y,v,lam,rho0,tgtJ)
 
-alphE = 0.083; %Encounter rate proportionality constant
+alphE = 0.11946; %Encounter rate proportionality constant
 alphM = 0.79472; %Mixing rate proportionality constant
 
 re = v*alphE;
@@ -11,7 +11,7 @@ dydt = zeros(size(y));
 J = y(end);
 
 %Do the changing 'attacked' bin size
-dydt(end) = sqrt(rho0)*alphM*v*(tgtJ - J);
+dydt(end) = (rho0^0.5)*alphM*v*(tgtJ - J);
 
 for c = 0:4 %sensitive-attacker contact index
     cInd = c*noBins;

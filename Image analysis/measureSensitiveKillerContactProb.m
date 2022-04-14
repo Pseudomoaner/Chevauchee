@@ -5,7 +5,7 @@ function pK = measureSensitiveKillerContactProb(imgS,imgK,pxSize)
 % 
 % aByL = ((l-w)*w + pi*(w/2)^2)/(pi*w + (l-w)*2); %Area to perimeter ratio for an average cell (units = um)
 
-aByL = 0.245; %Area to perimeter ratio for an average cell (units = um)
+aByL = 0.4313; %Area to perimeter ratio for an average cell (units = um). Empirically derived - see AreaPerimeterMeasurements.xlsx for measurements
 
 boundImg = bwmorph(and(imdilate(imgS,strel('disk',2)),imdilate(imgK,strel('disk',2))),'skel',Inf);
 

@@ -1,6 +1,6 @@
 function dydt = wellMixedODEs(t,y,v,lam,J)
 
-alphE = 0.083; %Encounter rate proportionality constant
+alphE = 0.11946; %Encounter rate proportionality constant
 re = v*alphE;
 
 noBins = numel(y)/5;

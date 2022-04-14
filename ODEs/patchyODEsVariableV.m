@@ -3,7 +3,7 @@ function dydt = patchyODEsVariableV(t,y,vmax,vrate,confT,lam,rho0,tgtJ)
 %vrate = width of velocity Gaussian
 %confT = confluency time
 
-alphE = 0.083; %Encounter rate proportionality constant
+alphE = 0.11946; %Encounter rate proportionality constant
 alphM = 0.79472; %Mixing rate proportionality constant
 
 v = vmax*exp(-((t-confT)/vrate)^2);
