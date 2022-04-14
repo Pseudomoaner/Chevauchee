@@ -11,6 +11,7 @@ frameName = 'Frame_%04d.tif';
 outName = 'Analysis.mat';
 
 lowDensFrames = 1:3; %Frames that will be used to do the flatfield correction for the three channels
+microcolonyFrame = 15; %Frame when microcolonies have developed, used to discount flecks of rubbish in the brightfield
 maxT = 31;
 pxSize = 0.227;
 neighSize = 5; %Approximate size of a single cell
@@ -40,8 +41,15 @@ RFPseg = zeros(size(BFstore));
 packFracs = zeros(size(BFstore,3),1);
 pKs = zeros(size(BFstore,3),1);
 
+BFmask = splitBF(BFstore(:,:,microcolonyFrame),neighSize,textThresh);
+BFmask = imopen(BFmask,strel('disk',10));
+
 for i = 1:maxT
-    BFseg(:,:,i) = splitBF(BFstore(:,:,i),neighSize,textThresh);
+    if i < microcolonyFrame
+        BFseg(:,:,i) = and(splitBF(BFstore(:,:,i),neighSize,textThresh),BFmask);
+    else
+        BFseg(:,:,i) = imopen(splitBF(BFstore(:,:,i),neighSize,textThresh),strel('disk',10));
+    end
     [GFPseg(:,:,i),RFPseg(:,:,i)] = splitFluo(BFseg(:,:,i),GFPstore(:,:,i),RFPstore(:,:,i),GFPflat,RFPflat);
 
     pKs(i) = measureSensitiveKillerContactProb(GFPseg(:,:,i),RFPseg(:,:,i),pxSize); 
