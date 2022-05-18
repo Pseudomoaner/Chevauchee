@@ -9,7 +9,7 @@ dt = 5;
 w = 1; %Cell width
 
 %Values for the diffusion model
-alphaD = 3.5; %Proportionality constant that converts velocity into cell diffusion rate
+alphaD = 5.638; %Proportionality constant that converts velocity into cell diffusion rate
 noHitBins = 6; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
 noConts = 5; %Number of contacts made by each cell 
 dx = 10; %Spatial resolution of the coarse-grained grid
@@ -17,7 +17,7 @@ noX = 20;
 noY = 20;
 xWidth = noX * dx;
 yHeight = noY * dx;
-noReps = 10; %Number of times you should repeat the simulation with different starting conditions to get your confidence interval
+noReps = 1; %Number of times you should repeat the simulation with different starting conditions to get your confidence interval
 
 noRho = 4;
 noLam = 1;
