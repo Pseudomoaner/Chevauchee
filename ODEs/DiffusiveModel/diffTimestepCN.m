@@ -39,10 +39,10 @@ if ~periodic
 else
     solMat = eye(size(concIn,2));
     solMat = solMat * (1 + 2*A) - A*(circshift(solMat,1,1) + circshift(solMat,-1,1));
-    solMatInv = inv(solMat); %Only need to calculate this once
+    solMatInv = inv(solMat);
 end
 
-for i = 1:size(concIn,2)
+for i = 1:size(concIn,1)
     %If non-periodic BCs, can use a much more computationally cheap
     %function to calculate necessary matrix
     if ~periodic
@@ -61,6 +61,20 @@ yRHS = (1-2*A)*halfSol + A*circshift(halfSol,1,1) + A*circshift(halfSol,-1,1);
 if ~periodic
     yRHS(1,:) = yRHS(1,:) - A*halfSol(end,:);
     yRHS(end,:) = yRHS(end,:) - A*halfSol(1,:);
+end
+
+%Solve tridiagonal matrix constructed from each row of the input
+%concentrations and the RHS
+if ~periodic
+    a = ones(size(concIn,1),1) * -A;
+    b = ones(size(concIn,1),1) * (1 + 2*A);
+    c = a;
+    a(1) = 0;
+    c(end) = 0;
+else
+    solMat = eye(size(concIn,1));
+    solMat = solMat * (1 + 2*A) - A*(circshift(solMat,1,1) + circshift(solMat,-1,1));
+    solMatInv = inv(solMat);
 end
 
 for i = 1:size(concIn,2)

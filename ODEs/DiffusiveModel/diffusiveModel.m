@@ -24,7 +24,7 @@ plotting = true;
 
 %Initial conditions
 [startA,startS] = initialisePatchyField(dx,xWidth,yHeight,0.001,atFrac);
-pops = cat(3,startA,startS,zeros(noX,noY,noHitBins*(noConts+1)-1)); %Create population array, attackers in first layer, unhit sensitives in second)
+pops = cat(3,startA,startS,zeros(noY,noX,noHitBins*(noConts+1)-1)); %Create population array, attackers in first layer, unhit sensitives in second)
 
 %Allow the system to equilibrate contact compartments without killing or
 %diffusion
@@ -54,9 +54,7 @@ end
 
 %Outer loop - macroscopic mixing (diffusion)
 for t = 1:noDiffTstesp
-    %Run diffusion of each of the populations separately (can we do this?
-    %Will they be guaranteed to add up to one everywhere if they're run
-    %separately?)
+    %Run diffusion of each of the populations separately
     for i = 1:size(pops,3)
         pops(:,:,i) = diffTimestepCN(pops(:,:,i),diffDt,dx,D,true);
     end
