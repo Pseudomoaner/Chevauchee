@@ -1,17 +1,18 @@
 clear all
 % close all
 
-v = 0;
+v = 0.1;
 lam = 0.01;
-atFrac = 3/10;
+atFrac = 1/10;
 
 noHitBins = 6;
+noConts = 5;
 
 tMax = 500;
 
-[t,y] = ode45(@(t,y)wellMixedODEs(t,y,v,lam,atFrac),[0,tMax],getStartingPopulations(atFrac,100,noHitBins));
+[t,y] = ode45(@(t,y)wellMixedODEs(t,y,v,lam,noConts,noHitBins),[0,tMax],[atFrac,getStartingPopulations(atFrac,1,noHitBins,noConts)']);
 
-writePopFracBarMovie(y,t)
+writePopFracBarMovie(y,t,noConts,noHitBins)
 
 % figure
 % subplot(1,2,1)

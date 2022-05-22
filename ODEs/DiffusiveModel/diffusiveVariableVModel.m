@@ -1,12 +1,12 @@
 clear all
 close all
 
-vmaxes = [0.008,0.013,0.035,0.032]/0.8;
+vmaxes = [0.005,0.01,0.035,0.032]/0.8;
 confTs = [4.5,9.5,11.5,14]*3600;
 rho0s = [1,0.1,0.01,0.001]*0.064;
 colours = [0,0,0;0.5,0.5,0.5;0.75,0.75,0.75;0.875,0.875,0.875];
 
-lam = 0.001; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
+lam = 0.005; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
 atFrac = 5.5/11; %Attacker fraction
 vrate = 3600; %Width of Gaussian velocity profile (s^-1)
 
@@ -80,7 +80,7 @@ for i = 1:4
     unhitTcourse = squeeze(sum(sum(sum(popsTcourse(:,:,2:noHitBins:end,:),1),2),3));
     plot(ax3,tList/3600,(atPopSize./unhitTcourse)./(atPopSize/sensPopSize),'LineWidth',1.5,'Color',colours(i,:))
 
-    save(sprintf('C:\\Users\\olijm\\Desktop\\SeanAna\\popTcourse_%i.mat',i),'popTcourse','vmax','rho0','confTime')
+    save(sprintf('C:\\Users\\olijm\\Desktop\\SeanAna\\popTcourse_%i.mat',i),'popsTcourse','vmax','rho0','confTime')
 end
 
 xlabel(ax1,'Time (hr)')
@@ -97,9 +97,9 @@ ax2.LineWidth = 1.5;
 ax3.Box = 'on';
 ax3.LineWidth = 1.5;
 
-axis(ax1,[0,24,0,0.014])
-axis(ax2,[0,24,0,0.11])
-axis(ax3,[0,24,0.5,1e5])
+axis(ax1,[0,24,0,0.05])
+axis(ax2,[0,24,0,0.55])
+axis(ax3,[0,24,0.5,1e12])
 
 ax3.YScale = 'log';
 
