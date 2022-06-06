@@ -1,7 +1,7 @@
 clear all
 close all
 
-Root = 'C:\Users\olijm\Desktop\SeanAna\Sample20x\OD1';
+Root = 'C:\Users\olijm\Desktop\SeanAna\Sample20x\OD0_01';
 
 BFchan = 'Channel_1';
 GFPchan = 'Channel_2';
@@ -11,11 +11,9 @@ frameName = 'Frame_%04d.tif';
 outName = 'Analysis.mat';
 
 lowDensFrames = 1:3; %Frames that will be used to do the flatfield correction for the three channels
-microcolonyFrame = 15; %Frame when microcolonies have developed, used to discount flecks of rubbish in the brightfield
+microcolonyFrame = 15; %Frame by which microcolonies have developed, used to discount flecks of rubbish in the brightfield
 maxT = 31;
 pxSize = 0.227;
-neighSize = 5; %Approximate size of a single cell
-textThresh = 2.5;
 
 %% Construct flatfield correction images
 for i = 1:maxT
@@ -33,22 +31,22 @@ GFPflat = imgaussfilt(mean(GFPstore(:,:,lowDensFrames),3),50);
 RFPflat = imgaussfilt(mean(RFPstore(:,:,lowDensFrames),3),50);
 
 %% Perfrom brightfield and fluorescence segmentation
+BFseg = splitBFseries(BFstore);
 
-BFseg = zeros(size(BFstore));
 GFPseg = zeros(size(BFstore));
 RFPseg = zeros(size(BFstore));
 
 packFracs = zeros(size(BFstore,3),1);
 pKs = zeros(size(BFstore,3),1);
 
-BFmask = splitBF(BFstore(:,:,microcolonyFrame),neighSize,textThresh);
+BFmask = BFseg(:,:,microcolonyFrame);
 BFmask = imopen(BFmask,strel('disk',10));
 
 for i = 1:maxT
     if i < microcolonyFrame
-        BFseg(:,:,i) = and(splitBF(BFstore(:,:,i),neighSize,textThresh),BFmask);
+        BFseg(:,:,i) = and(BFseg(:,:,i),BFmask);
     else
-        BFseg(:,:,i) = imopen(splitBF(BFstore(:,:,i),neighSize,textThresh),strel('disk',10));
+        BFseg(:,:,i) = imopen(BFseg(:,:,i),strel('disk',10));
     end
     [GFPseg(:,:,i),RFPseg(:,:,i)] = splitFluo(BFseg(:,:,i),GFPstore(:,:,i),RFPstore(:,:,i),GFPflat,RFPflat);
 
