@@ -22,7 +22,7 @@ GFPchan = 'Channel_2';
 RFPchan = 'Channel_3';
 
 frameName = 'Frame%04d.tif'; %imageJ output was done without _
-outName = 'Analysis_V2.mat';
+outName = 'Analysis_V3.mat';
 
 lowDensFrames = 1:3; %Frames that will be used to do the flatfield correction for the three channels
 microcolonyFrame = 15; %Frame when microcolonies have developed, used to discount flecks of rubbish in the brightfield
@@ -47,22 +47,22 @@ GFPflat = imgaussfilt(mean(GFPstore(:,:,lowDensFrames),3),50);
 RFPflat = imgaussfilt(mean(RFPstore(:,:,lowDensFrames),3),50);
 
 %% Perfrom brightfield and fluorescence segmentation
+BFseg = splitBFseries(BFstore);
 
-BFseg = zeros(size(BFstore));
 GFPseg = zeros(size(BFstore));
 RFPseg = zeros(size(BFstore));
 
 packFracs = zeros(size(BFstore,3),1);
 pKs = zeros(size(BFstore,3),1);
 
-BFmask = splitBF(BFstore(:,:,microcolonyFrame),neighSize,textThresh);
+BFmask = BFseg(:,:,microcolonyFrame);
 BFmask = imopen(BFmask,strel('disk',10));
 
 for i = 1:maxT
     if i < microcolonyFrame
-        BFseg(:,:,i) = and(splitBF(BFstore(:,:,i),neighSize,textThresh),BFmask);
+        BFseg(:,:,i) = and(BFseg(:,:,i),BFmask);
     else
-        BFseg(:,:,i) = imopen(splitBF(BFstore(:,:,i),neighSize,textThresh),strel('disk',10));
+        BFseg(:,:,i) = imopen(BFseg(:,:,i),strel('disk',10));
     end
     [GFPseg(:,:,i),RFPseg(:,:,i)] = splitFluo(BFseg(:,:,i),GFPstore(:,:,i),RFPstore(:,:,i),GFPflat,RFPflat);
 
