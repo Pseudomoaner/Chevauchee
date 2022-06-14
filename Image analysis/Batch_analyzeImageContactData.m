@@ -22,7 +22,7 @@ GFPchan = 'Channel_2';
 RFPchan = 'Channel_3';
 
 frameName = 'Frame%04d.tif'; %imageJ output was done without _
-outName = 'Analysis_V3.mat';
+outName = 'Analysis_V4_gradient.mat';
 
 lowDensFrames = 1:3; %Frames that will be used to do the flatfield correction for the three channels
 microcolonyFrame = 15; %Frame when microcolonies have developed, used to discount flecks of rubbish in the brightfield
@@ -73,5 +73,8 @@ for i = 1:maxT
 end
 
 save(fullfile(Root,outName),'BFseg','GFPseg','RFPseg','pKs','packFracs')
+bfsave(BFseg, fullfile(Root,'C1_segment.tif'),'bigtiff',true);
+bfsave(GFPseg, fullfile(Root,'C2_segment.tif'),'bigtiff',true');
+bfsave(RFPseg, fullfile(Root,'C3_segment.tif'),'bigtiff',true');
 clearvars -except rootFold folds %otherwise errors happen
 end

@@ -14,8 +14,8 @@ folds = {folds.name};
 for loop = 1:size(folds,2);
     disp(folds(loop));
     Root = strcat(rootFold,char(folds(loop)));
-    load(fullfile(Root,"Analysis.mat"),'pKs','packFracs')
+    load(fullfile(Root,"Analysis_V4_gradient.mat"),'pKs','packFracs')
     
     output = table(pKs,packFracs);
-    writetable(output, fullfile(Root,"output.csv"));
+    writetable(output, fullfile(Root,"output_V4.csv"));
 end

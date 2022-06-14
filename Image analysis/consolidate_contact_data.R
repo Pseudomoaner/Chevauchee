@@ -11,7 +11,7 @@ alldat <- list()
 for (i in 1:length(folders)){
   setwd(paste0(root,.Platform$file.sep,folders[i]))
   print(paste0(root,.Platform$file.sep,folders[i]))
-  dat <- read_csv("output.csv") %>% rename(contacts=pKs,flu_coverage=packFracs)
+  dat <- read_csv("output_V4.csv") %>% rename(contacts=pKs,flu_coverage=packFracs)
   dat$Experiment <- folders[i]
   dat$Time <- seq(0.5,dim(dat)[1]/2,0.5)
   alldat[[i]] <- dat
@@ -30,4 +30,4 @@ dat <- dat %>% mutate(Density = case_when(grepl("OD1",Experiment) ~ "1",
 ggplot(dat, aes(x=Time,y=contacts,color=Density))+geom_path(size=2,aes(group=Experiment))+theme_bw()
 
 setwd(root)
-write_csv(dat,"flu_dat.csv")
+write_csv(dat,"flu_dat_V4.csv")

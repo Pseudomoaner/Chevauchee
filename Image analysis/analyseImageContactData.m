@@ -1,14 +1,16 @@
 clear all
 close all
 
-Root = 'C:\Users\olijm\Desktop\SeanAna\Sample20x\OD0_01';
+%Root = 'C:\Users\olijm\Desktop\SeanAna\Sample20x\OD0_01';
+
+Root = pwd;
 
 BFchan = 'Channel_1';
 GFPchan = 'Channel_2';
 RFPchan = 'Channel_3';
 
 frameName = 'Frame%04d.tif';
-outName = 'Analysis.mat';
+outName = 'Analysis_V4_gradient1.5.mat';
 
 lowDensFrames = 1:3; %Frames that will be used to do the flatfield correction for the three channels
 microcolonyFrame = 15; %Frame by which microcolonies have developed, used to discount flecks of rubbish in the brightfield
@@ -56,4 +58,9 @@ for i = 1:maxT
     fprintf('Image %i of %i done.\n',i,maxT)
 end
 
-save(fullfile(Root,outName),'BFseg','GFPseg','RFPseg','pKs','packFracs')
+%use bioformats save to output the segmentations
+bfsave(BFseg, 'C1_segment.tif','bigtiff',true);
+bfsave(GFPseg, 'C2_segment.tif','bigtiff',true');
+bfsave(RFPseg, 'C3_segment.tif','bigtiff',true');
+
+%save(fullfile(Root,outName),'BFseg','GFPseg','RFPseg','pKs','packFracs')

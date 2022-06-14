@@ -1,6 +1,6 @@
 function BFseg = splitBFseries(BFstore)
 
-textThresh = 2.5;
+textThresh = 2.0;
 neighSize = 5; %Approximate size of a single cell
 
 BFseg = zeros(size(BFstore));
