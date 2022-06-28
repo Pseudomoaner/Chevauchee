@@ -40,6 +40,7 @@ RFPseg = zeros(size(BFstore));
 
 packFracs = zeros(size(BFstore,3),1);
 pKs = zeros(size(BFstore,3),1);
+ratio = zeros(size(BFstore,3),1);
 
 BFmask = BFseg(:,:,microcolonyFrame);
 BFmask = imopen(BFmask,strel('disk',10));
@@ -54,6 +55,7 @@ for i = 1:maxT
 
     pKs(i) = measureSensitiveKillerContactProb(GFPseg(:,:,i),RFPseg(:,:,i),pxSize); 
     packFracs(i) = sum(sum(BFseg(:,:,i)))/(size(BFseg,1)*size(BFseg,2));
+    ratio = sum(GFPseg(:,:,i)/sum(RFPseg(:,:,i)));
 
     fprintf('Image %i of %i done.\n',i,maxT)
 end

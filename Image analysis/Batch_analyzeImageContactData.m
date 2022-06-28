@@ -22,7 +22,7 @@ GFPchan = 'Channel_2';
 RFPchan = 'Channel_3';
 
 frameName = 'Frame%04d.tif'; %imageJ output was done without _
-outName = 'Analysis_V4_gradient.mat';
+outName = 'Analysis_V4_gradient2.5.mat';
 
 lowDensFrames = 1:3; %Frames that will be used to do the flatfield correction for the three channels
 microcolonyFrame = 15; %Frame when microcolonies have developed, used to discount flecks of rubbish in the brightfield
@@ -54,6 +54,7 @@ RFPseg = zeros(size(BFstore));
 
 packFracs = zeros(size(BFstore,3),1);
 pKs = zeros(size(BFstore,3),1);
+ratio = zeros(size(BFstore,3),1);
 
 BFmask = BFseg(:,:,microcolonyFrame);
 BFmask = imopen(BFmask,strel('disk',10));
@@ -68,13 +69,18 @@ for i = 1:maxT
 
     pKs(i) = measureSensitiveKillerContactProb(GFPseg(:,:,i),RFPseg(:,:,i),pxSize); 
     packFracs(i) = sum(sum(BFseg(:,:,i)))/(size(BFseg,1)*size(BFseg,2));
+    if sum(GFPseg(:,:,i),'all') == 0 | sum(RFPseg(:,:,i),'all') == 0
+        ratio(i) = NaN;
+    else
+        ratio(i) = sum(GFPseg(:,:,i),'all')/sum(RFPseg(:,:,i),'all');
+    end
 
     fprintf('Image %i of %i done.\n',i,maxT)
 end
 
-save(fullfile(Root,outName),'BFseg','GFPseg','RFPseg','pKs','packFracs')
-bfsave(BFseg, fullfile(Root,'C1_segment.tif'),'bigtiff',true);
-bfsave(GFPseg, fullfile(Root,'C2_segment.tif'),'bigtiff',true');
-bfsave(RFPseg, fullfile(Root,'C3_segment.tif'),'bigtiff',true');
+save(fullfile(Root,outName),'BFseg','GFPseg','RFPseg','pKs','packFracs', 'ratio')
+%bfsave(BFseg, fullfile(Root,'C1_segment.tif'),'bigtiff',true);
+%bfsave(GFPseg, fullfile(Root,'C2_segment.tif'),'bigtiff',true');
+%bfsave(RFPseg, fullfile(Root,'C3_segment.tif'),'bigtiff',true');
 clearvars -except rootFold folds %otherwise errors happen
 end
