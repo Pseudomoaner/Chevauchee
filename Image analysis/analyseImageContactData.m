@@ -1,7 +1,7 @@
 clear all
 close all
 
-Root = 'C:\Users\olijm\Desktop\SeanAna\Sample20x\OD1';
+Root = 'C:\Users\olijm\Desktop\SeanAna\Sample20x\OD0_001';
 
 BFchan = 'Channel_1';
 GFPchan = 'Channel_2';
@@ -38,7 +38,8 @@ RFPseg = zeros(size(BFstore));
 fluoThresh = zeros(maxT,1);
 
 packFracs = zeros(size(BFstore,3),1);
-pKs = zeros(size(BFstore,3),1);
+varMix = zeros(size(BFstore,3),1);
+%pKs = zeros(size(BFstore,3),1);
 
 BFmask = BFseg(:,:,microcolonyFrame);
 BFmask = imopen(BFmask,strel('disk',10));
@@ -59,8 +60,10 @@ fluoThresh = smooth(fluoThresh,5);
 for i = 1:maxT
     [GFPseg(:,:,i),RFPseg(:,:,i)] = splitFluo(BFseg(:,:,i),GFPstore(:,:,i),RFPstore(:,:,i),GFPflat,RFPflat,fluoThresh(i));
  
-    pKs(i) = measureSensitiveKillerContactProb(GFPseg(:,:,i),RFPseg(:,:,i),pxSize); 
+    %pKs(i) = measureSensitiveKillerContactProb(GFPseg(:,:,i),RFPseg(:,:,i),pxSize) 
+    
+    varMix(i) = measureSensitiveKillerIntermixing(GFPseg(:,:,i),RFPseg(:,:,i),pxSize);
     packFracs(i) = sum(sum(BFseg(:,:,i)))/(size(BFseg,1)*size(BFseg,2));
 end
 
-save(fullfile(Root,outName),'BFseg','GFPseg','RFPseg','pKs','packFracs')
+save(fullfile(Root,outName),'BFseg','GFPseg','RFPseg','varMix','packFracs')
