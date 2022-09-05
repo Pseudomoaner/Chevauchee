@@ -1,30 +1,31 @@
 clear all
 close all
 
-vmaxes = [0.005,0.01,0.035,0.032]/0.8;
-confTs = [4.5,9.5,11.5,14]*3600;
+vmaxes = [0.005,0.014,0.031,0.027]/0.8;
+confTs = [2,2,2,2]*3600;%[4.5,9.5,11.5,14]*3600;
 rho0s = [1,0.1,0.01,0.001]*0.064;
-colours = [0,0,0;0.5,0.5,0.5;0.75,0.75,0.75;0.875,0.875,0.875];
+colours = [10,58,92;31,126,193;76,178,250;156,212,252]/255;
 
-lam = 0.005; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
+lam = 0.003; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
+hitEfficiency = 0.1; %The impact of each hit on the targeted cell's ongoing growth rate
 atFrac = 5.5/11; %Attacker fraction
-vrate = 3600; %Width of Gaussian velocity profile (s^-1)
+vrate = 3000; %Width of Gaussian velocity profile (s^-1)
 
 %Dimensional parameters
 dx = 10; %Granularity of coarse-grained lattice
-xWidth = 780; % =624 um / 0.8 um
-yHeight = 630; % = 501 um / 0.8 um
+xWidth = 600; %780 = 624 um / 0.8 um
+yHeight = 600; %630 = 501 um / 0.8 um
 noX = xWidth/dx;
 noY = yHeight/dx;
 w = 1; %Cell width
-tMax = 24*3600;
+tMax = 4*3600;
 diffDt = 200; %Timestep between diffusion timesteps
 noDiffTsteps = tMax/diffDt;
 tList = linspace(0,tMax,noDiffTsteps+1);
 
 %Rate-related parameters
 alphaD = 5.638; %Proportionality constant that converts velocity into cell diffusion rate
-noHitBins = 6; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
+noHitBins = 11; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
 noConts = 5; %Number of contacts made by each cell
 
 figure(1);
@@ -75,12 +76,15 @@ for i = 1:4
     plot(ax1,tList/3600,vmax*exp(-((tList-confTime)/vrate).^2),'LineWidth',1.5,'Color',colours(i,:))
 
     J = squeeze(popsTcourse(:,:,1,:));
-    plot(ax2,tList/3600,squeeze(mean(mean(J.*(1-J),1),2))./(sensPopSize/(atPopSize+sensPopSize)),'LineWidth',1.5,'Color',colours(i,:))
+    plot(ax2,tList/3600,var(reshape(J,noX*noY,size(J,3))),'LineWidth',1.5,'Color',colours(i,:))
     
-    unhitTcourse = squeeze(sum(sum(sum(popsTcourse(:,:,2:noHitBins:end,:),1),2),3));
-    plot(ax3,tList/3600,(atPopSize./unhitTcourse)./(atPopSize/sensPopSize),'LineWidth',1.5,'Color',colours(i,:))
+    sensTcourse = zeros(size(popsTcourse,4),1);
+    for j = 0:noHitBins-1
+        sensTcourse = sensTcourse + squeeze(sum(sum(sum(popsTcourse(:,:,2+j:noHitBins:end,:),1),2),3)) * max(0,(1-j*hitEfficiency));
+    end
+    plot(ax3,tList/3600,(atPopSize./sensTcourse)./(atPopSize/sensPopSize),'LineWidth',1.5,'Color',colours(i,:))
 
-    save(sprintf('C:\\Users\\olijm\\Desktop\\SeanAna\\popTcourse_%i.mat',i),'popsTcourse','vmax','rho0','confTime')
+%     save(sprintf('C:\\Users\\olijm\\Desktop\\SeanAna\\popTcourse_%i.mat',i),'popsTcourse','vmax','rho0','confTime')
 end
 
 xlabel(ax1,'Time (hr)')
@@ -99,7 +103,7 @@ ax3.LineWidth = 1.5;
 
 axis(ax1,[0,24,0,0.05])
 axis(ax2,[0,24,0,0.55])
-axis(ax3,[0,24,0.5,1e12])
+axis(ax3,[0,24,0.5,1e7])
 
 ax3.YScale = 'log';
 
