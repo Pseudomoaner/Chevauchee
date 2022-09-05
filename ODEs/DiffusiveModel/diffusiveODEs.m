@@ -1,6 +1,6 @@
 function dydt = diffusiveODEs(t,y,v,lam,noX,noY,noConts,noHitBins)
 
-alphE = 0.11946; %Encounter rate proportionality constant
+alphE = 0.1033; %Encounter rate proportionality constant
 re = v*alphE;
 
 %Reshape y to recreate the attacker and sensitive arrays
