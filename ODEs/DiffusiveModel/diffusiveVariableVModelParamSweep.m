@@ -18,10 +18,18 @@ yHeight = 340; %630 = 501 um / 0.8 um
 noX = xWidth/dx;
 noY = yHeight/dx;
 w = 1; %Cell width
-tMax = 4*3600;
+tMin = -2.5*3600;
+tMax = 2.5*3600;
 diffDt = 200; %Timestep between diffusion timesteps
 noDiffTsteps = tMax/diffDt;
 tList = linspace(0,tMax,noDiffTsteps+1);
+noReps = 1;
+
+%Option 1: Use raw velocity timecourses
+% velLists = (getExptVelocityCourses(tList/3600)-0.0018)/0.8;
+
+%Option 2: Use averaged velocity timecourses
+velLists = (repmat(mean(getExptVelocityCourses(tList/3600),3),1,1,noReps)-0.0018)/0.8;
 
 %Rate-related parameters
 alphaD = 5.638; %Proportionality constant that converts velocity into cell diffusion rate
@@ -38,10 +46,8 @@ for lamInd = 1:size(lams,2)
         hold(ax,'on')
         for i = 1:4
             rho0 = rho0s(i); %Seeding density (cells cellWidth^-2)
-            vmax = vmaxes(i); %Maximum velocity (cewllWidths s^-1)
-            confTime = confTs(i); %Time to confluency
-
-            vList = vmax*exp(-((tList-confTime)/vrate).^2);
+            
+            vList = velLists(:,i);
 
             [startA,startS] = initialisePatchyField(dx,xWidth,yHeight,rho0,atFrac);
             pops = cat(3,startA,startS,zeros(noY,noX,noHitBins*(noConts+1)-1)); %Create population array, attackers in first layer, unhit sensitives in second)

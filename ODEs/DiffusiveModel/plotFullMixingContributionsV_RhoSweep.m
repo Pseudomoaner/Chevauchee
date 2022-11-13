@@ -4,12 +4,12 @@ close all
 lam = 0.01;
 atFrac = 1/10;
 
-vs = [1,0.1,0.01];
-rho0s = [1,0.1,0.01,0.001];
+vs = [0.03,0.1,0.3];
+rho0s = [0.064,0.016,0.004,0.001,0.00025];
 
 dx = 10; %Granularity of coarse-grained lattice
-xWidth = 200;
-yHeight = 200;
+xWidth = 300;
+yHeight = 300;
 noX = xWidth/dx;
 noY = yHeight/dx;
 
@@ -17,34 +17,41 @@ tMax = 1000;
 diffDt = 5; %Timestep between diffusion timesteps
 noDiffTsteps = tMax/diffDt + 1;
 
-noHitBins = 6; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
+noHitBins = 2; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
 noConts = 5; %Number of contacts made by each cell
 
 figure
+cList = [208, 0, 0;203, 232, 150;198, 159, 137]/255;
 
-for vInd = 1:size(vs,2)
-    v = vs(vInd);
+for rhoInd = 1:size(rho0s,2)
+    rho0 = rho0s(rhoInd);
 
-    baseStore = zeros(size(rho0s));
-    contExStore = zeros(size(rho0s));
-    homoStore = zeros(size(rho0s));
+    baseStore = zeros(size(vs));
+    contExStore = zeros(size(vs));
+    homoStore = zeros(size(vs));
 
-    for rhoInd = 1:size(rho0s,2)
-        rho0 = rho0s(rhoInd);
+    [startA,startS] = initialisePatchyField(dx,xWidth,yHeight,rho0,atFrac);
+
+    for vInd = 1:size(vs,2)
+        v = vs(vInd);
         
         vList = v*ones(noDiffTsteps,1);
-        [baseStore(rhoInd),contExStore(rhoInd),homoStore(rhoInd)] = calcFullMixingContributions(dx,xWidth,yHeight,rho0,atFrac,noConts,noHitBins,noX,noY,lam,vList,diffDt,tMax);
+        [baseStore(vInd),contExStore(vInd),homoStore(vInd)] = calcFullMixingContributions(dx,startA,startS,atFrac,noConts,noHitBins,noX,noY,lam,vList,diffDt,tMax,1);
     end
-    subplot(size(vs,2),1,vInd)
-    bar([baseStore;contExStore;homoStore]','stacked')
+    subplot(1,size(rho0s,2),rhoInd)
+    br = bar([baseStore;contExStore;homoStore]','stacked','LineWidth',1);
     hold on
+    for k = 1:3
+        br(k).FaceColor = cList(k,:);
+    end
     plot([0,numel(rho0s)+1],1-[atFrac,atFrac],'k--','LineWidth',1.5)
-    xlabel('Seeding density')
+    xlabel('Average cell velocity')
     ylabel('Contribution to killing')
-    axis([0.4,4.6,0,1])
-    title(['v = ',num2str(v)])
+    axis([0.4,3.6,0,1])
+    title(['\rho_0 = ',num2str(rho0)])
     ax = gca;
-    ax.XTickLabel = cellstr(num2str(rho0s(:)));
+    ax.XTickLabel = cellstr(num2str(vs(:)));
+    ax.LineWidth = 1.5;
 end
 
 legend('Base','Contact exchange','Homogenization')

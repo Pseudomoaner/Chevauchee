@@ -4,11 +4,11 @@ close all
 v = 0.1;
 lam = 0.01;
 atFrac = 1/10;
-rho0 = 1;
+rho0 = 0.001;
 
 dx = 10; %Granularity of coarse-grained lattice
-xWidth = 200;
-yHeight = 200;
+xWidth = 300;
+yHeight = 300;
 noX = xWidth/dx;
 noY = yHeight/dx;
 
@@ -21,7 +21,7 @@ D = v*alphaD;
 noHitBins = 6; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
 noConts = 5; %Number of contacts made by each cell
 
-plotting = true;
+plotting = false;
 
 %Initial conditions
 [startA,startS] = initialisePatchyField(dx,xWidth,yHeight,rho0,atFrac);
@@ -57,11 +57,11 @@ end
 for t = 1:noDiffTsteps
     %Run diffusion of each of the populations separately
     for i = 1:size(pops,3)
-        pops(:,:,i) = diffTimestepCN(pops(:,:,i),diffDt,dx,D,true);
+        pops(:,:,i) = diffTimestepCN(pops(:,:,i),diffDt,dx,0,true);
     end
 
     %Inner loop - microscopic mixing (contact swapping)
-    [t,pops] = ode45(@(t,y)diffusiveODEs(t,y,v,lam,noX,noY,noConts,noHitBins),[0,diffDt],pops(:));
+    [t,pops] = ode45(@(t,y)diffusiveODEs(t,y,0,lam,noX,noY,noConts,noHitBins),[0,diffDt],pops(:));
     pops = pops(end,:);
     pops = reshape(pops,noY,noX,noHitBins*(noConts+1) + 1);
     popsTcourse = cat(4,popsTcourse,pops);

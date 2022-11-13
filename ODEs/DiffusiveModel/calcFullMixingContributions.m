@@ -1,9 +1,8 @@
-function [base,contEx,homo] = calcFullMixingContributions(dx,xWidth,yHeight,rho0,atFrac,noConts,noHitBins,noX,noY,lam,vs,diffDt,tMax,hitEfficiency)
+function [base,contEx,homo] = calcFullMixingContributions(dx,startA,startS,atFrac,noConts,noHitBins,noX,noY,lam,vs,diffDt,tMax,hitEfficiency)
 alphaD = 5.638; %Proportionality constant that converts velocity into cell diffusion rate
 noDiffTsteps = tMax/diffDt + 1;
 
 %Initial conditions
-[startA,startS] = initialisePatchyField(dx,xWidth,yHeight,rho0,atFrac);
 pops = cat(3,startA,startS,zeros(noY,noX,noHitBins*(noConts+1)-1)); %Create population array, attackers in first layer, unhit sensitives in second)
 
 %Allow the system to equilibrate contact compartments without killing or
