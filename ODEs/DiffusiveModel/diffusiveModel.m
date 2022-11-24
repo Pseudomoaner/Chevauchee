@@ -4,26 +4,27 @@ close all
 v = 0.1;
 lam = 0.01;
 atFrac = 1/10;
+rho0 = 0.001;
 
 dx = 10; %Granularity of coarse-grained lattice
-xWidth = 200;
-yHeight = 200;
+xWidth = 300;
+yHeight = 300;
 noX = xWidth/dx;
 noY = yHeight/dx;
 
 tMax = 1000;
 diffDt = 5; %Timestep between diffusion timesteps
-noDiffTstesp = tMax/diffDt;
+noDiffTsteps = tMax/diffDt;
 alphaD = 5.638; %Proportionality constant that converts velocity into cell diffusion rate
 D = v*alphaD;
 
 noHitBins = 6; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
 noConts = 5; %Number of contacts made by each cell
 
-plotting = true;
+plotting = false;
 
 %Initial conditions
-[startA,startS] = initialisePatchyField(dx,xWidth,yHeight,0.001,atFrac);
+[startA,startS] = initialisePatchyField(dx,xWidth,yHeight,rho0,atFrac);
 pops = cat(3,startA,startS,zeros(noY,noX,noHitBins*(noConts+1)-1)); %Create population array, attackers in first layer, unhit sensitives in second)
 
 %Allow the system to equilibrate contact compartments without killing or
@@ -53,14 +54,14 @@ if plotting
 end
 
 %Outer loop - macroscopic mixing (diffusion)
-for t = 1:noDiffTstesp
+for t = 1:noDiffTsteps
     %Run diffusion of each of the populations separately
     for i = 1:size(pops,3)
-        pops(:,:,i) = diffTimestepCN(pops(:,:,i),diffDt,dx,D,true);
+        pops(:,:,i) = diffTimestepCN(pops(:,:,i),diffDt,dx,0,true);
     end
 
     %Inner loop - microscopic mixing (contact swapping)
-    [t,pops] = ode45(@(t,y)diffusiveODEs(t,y,v,lam,noX,noY,noConts,noHitBins),[0,diffDt],pops(:));
+    [t,pops] = ode45(@(t,y)diffusiveODEs(t,y,0,lam,noX,noY,noConts,noHitBins),[0,diffDt],pops(:));
     pops = pops(end,:);
     pops = reshape(pops,noY,noX,noHitBins*(noConts+1) + 1);
     popsTcourse = cat(4,popsTcourse,pops);
@@ -121,4 +122,6 @@ for t = 1:noDiffTstesp
     end
 end
 
-close(writer)
+if plotting
+    close(writer)
+end
