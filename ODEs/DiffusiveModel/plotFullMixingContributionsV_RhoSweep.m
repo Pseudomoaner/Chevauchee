@@ -5,7 +5,7 @@ lam = 0.01;
 atFrac = 1/10;
 
 vs = [0.03,0.1,0.3];
-rho0s = [0.064,0.016,0.004,0.001,0.00025];
+rho0s = [0.256,0.064,0.016,0.004,0.001,0.00025];
 
 dx = 10; %Granularity of coarse-grained lattice
 xWidth = 300;
@@ -21,7 +21,7 @@ noHitBins = 2; %Number of different hit categories to take into consideration, f
 noConts = 5; %Number of contacts made by each cell
 
 figure
-cList = [208, 0, 0;203, 232, 150;198, 159, 137]/255;
+cList = [198, 159, 137;206, 45, 45;119, 225, 119]/255;
 
 for rhoInd = 1:size(rho0s,2)
     rho0 = rho0s(rhoInd);

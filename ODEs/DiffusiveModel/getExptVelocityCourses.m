@@ -1,6 +1,8 @@
 function velCourses = getExptVelocityCourses(timeList)
 
-PVD = readtable('C:\Users\omeacock\Desktop\SeanData\processedVelocityData.csv');
+noiseMedianV = 0.003; %The measured value of the median PIV signal in frames, used to correct the measured sigal
+
+PVD = readtable('C:\Users\omeacock\Desktop\SeanData\processedVelocityDataOld.csv');
 
 ExptNames = unique(PVD{:,4});
 
@@ -13,3 +15,10 @@ for i = 1:size(ExptNames,1)
     velCourses(:,densInd,repCnt(densInd)) = interp1(currDat(:,3),currDat(:,2),timeList);
     repCnt(densInd) = repCnt(densInd) + 1;
 end
+
+velCourses = mean(velCourses,3);
+
+%Apply noise correction to the measured median velocities, under the
+%assumption that the velocity distribution is a Reyleigh and the noise
+%is Gaussian
+velCourses = sqrt(velCourses.^2 - noiseMedianV^2);
