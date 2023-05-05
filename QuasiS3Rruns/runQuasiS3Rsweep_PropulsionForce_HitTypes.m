@@ -40,6 +40,7 @@ patchSettings.popFrac = 0.1;
 patchSettings.reversalRate = 0;
 patchSettings.colour = [0,0.5,1];
 patchSettings.popLabel = 't';
+patchSettings.force = 1;
 
 %Output settings
 dispSettings.saveFrames = false; %Whether or not to save visualisations of each sampled timepoint
@@ -77,8 +78,10 @@ for fInd = 1:size(fs,2)
         switch ht
             case 1
                 fieldSettings.hitRateType = 'distributed';
+                patchSettings.fireRate = 0.02/5; %5 is the average number of contacts
             case 2
                 fieldSettings.hitRateType = 'constant';
+                patchSettings.fireRate = 0.02;
         end
         
         cellSettings.f = 1;
