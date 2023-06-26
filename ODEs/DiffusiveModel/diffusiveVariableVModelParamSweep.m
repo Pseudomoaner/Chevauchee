@@ -4,8 +4,8 @@ close all
 rho0s = [1,0.1,0.01,0.001]*0.064;
 colours = [10,58,92;31,126,193;76,178,250;156,212,252]/255;
 
-lams = [0.0002,0.0005,0.001,0.002,0.005]; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
-hitEfficiencies = [0.02,0.05,0.1,0.2,0.5]; %The impact of each hit on the targeted cell's ongoing growth rate
+lams = [0.02]; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
+hitEfficiencies = [0.01,0.02,0.05,0.1,0.2]; %The impact of each hit on the targeted cell's ongoing growth rate
 atFrac = 5.5/11; %Attacker fraction
 
 %Dimensional parameters
@@ -47,13 +47,17 @@ for lamInd = 1:size(lams,2)
             for r = 1:noReps
                 [startA,startS] = initialisePatchyField(dx,xWidth,yHeight,rho0,atFrac);
                 pops = cat(3,startA,startS,zeros(noY,noX,noHitBins*(noConts+1)-1)); %Create population array, attackers in first layer, unhit sensitives in second)
-
+                
+                sensTcourse = zeros(noDiffTsteps,1);
+                
                 %Allow the system to equilibrate contact compartments without killing or
                 %diffusion
                 [~,pops] = ode45(@(t,y)diffusiveODEs(t,y,1,0,noX,noY,noConts,noHitBins),[0,3600],pops(:));
                 pops = pops(end,:);
                 pops = reshape(pops,noY,noX,noHitBins*(noConts+1) + 1);
-                popsTcourse = pops;
+                
+                atPopSize = sum(sum(pops(:,:,1),1),2);
+                sensPopSize = sum(sum(sum(pops(:,:,2:end),1),2),3);
 
                 for tS = 1:noDiffTsteps
                     currV = vList(tS);
@@ -68,22 +72,19 @@ for lamInd = 1:size(lams,2)
                     [~,pops] = ode45(@(t,y)diffusiveODEs(t,y,currV,lam,noX,noY,noConts,noHitBins),[0,diffDt],pops(:));
                     pops = pops(end,:);
                     pops = reshape(pops,noY,noX,noHitBins*(noConts+1) + 1);
-                    popsTcourse = cat(4,popsTcourse,pops);
+                    
+                    for j = 0:noHitBins-1
+                        sensTcourse(tS) = sensTcourse(tS) + squeeze(sum(sum(sum(pops(:,:,2+j:noHitBins:end),1),2),3)) * max(0,(1-j*hitEfficiency));
+                    end
                 end
 
-                atPopSize = sum(sum(popsTcourse(:,:,1,1),1),2);
-                sensPopSize = sum(sum(sum(popsTcourse(:,:,2:end,1),1),2),3);
-
-                sensTcourse = zeros(size(popsTcourse,4),1);
-                for j = 0:noHitBins-1
-                    sensTcourse = sensTcourse + squeeze(sum(sum(sum(popsTcourse(:,:,2+j:noHitBins:end,:),1),2),3)) * max(0,(1-j*hitEfficiency));
-                end
                 CIs = (atPopSize./sensTcourse)./(atPopSize/sensPopSize);
-
                 CIstore(i,r) = CIs(end);
+                
+                endPops = pops;
+                
+                save(sprintf('C:\\Users\\Olivier\\OneDrive - Université de Lausanne\\Simulations\\Driveby\\popDat_rho_%f_ef_%f_lam_%f_r_%i.mat',rho0,hitEfficiency,lam,r),'startA','startS','CIs','endPops','sensTcourse','atPopSize','sensPopSize')
             end
-
-            %     save(sprintf('C:\\Users\\olijm\\Desktop\\SeanAna\\popTcourse_%i.mat',i),'popsTcourse','vmax','rho0','confTime')
         end
 
         plotSpread(ax,flip(CIstore',2),'DistributionMarkers','o','BinWidth',0.5,'distributionColors',flip(colours,1),'xValues',1:4)
