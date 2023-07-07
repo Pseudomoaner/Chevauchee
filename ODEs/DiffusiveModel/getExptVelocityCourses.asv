@@ -8,12 +8,7 @@ function velCourses = getExptVelocityCourses(timeList)
 %       timepoints in the original data.
 %
 %   OUTPUTS:
-%       -velCourses: Interpolated median velocities, measured by PIV. A
-%       txcxr array, where t is the number of timepoints in timeList, c is
-%       the number of conditions (starting densities) and r is the number
-%       of replicates.
-%
-%   Author: Oliver J. Meacock, 2023
+%       -
 
 noiseMedianV = 0.003; %The measured value of the median PIV signal in frames, used to correct the measured sigal
 

@@ -1,7 +1,7 @@
 clear all
 close all
 
-rng(1) %Allows reproducible generation of the initial starting configurations
+rng(0) %Allows reproducible generation of the initial starting configurations
 
 rho0s = [1,0.1,0.01,0.001]*0.064;
 colours = [10,58,92;31,126,193;76,178,250;156,212,252]/255;
@@ -29,7 +29,7 @@ noReps = 5; %Must be set to three if the raw velocity timecourses are used (see 
 % velLists = (getExptVelocityCourses(tList/3600))/0.8;
 
 %Option 2: Use averaged velocity timecourses
-velLists = (repmat(mean(getExptVelocityCourses(tList/3600),3),1,1,noReps) - 0.001)/0.8; %The 0.001 is an (approximate) measure of the measurement noise from the PIV, based on static high-density images
+velLists = (repmat(mean(getExptVelocityCourses(tList/3600),3),1,1,noReps))/0.8;
 
 %Rate-related parameters
 alphaD = 5.638; %Proportionality constant that converts velocity into cell diffusion rate
