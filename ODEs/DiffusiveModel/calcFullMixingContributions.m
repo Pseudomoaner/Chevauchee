@@ -1,4 +1,37 @@
 function [base,contEx,homo] = calcFullMixingContributions(dx,startA,startS,atFrac,noConts,noHitBins,noX,noY,lam,vs,diffDt,tMax,hitEfficiency)
+%CALCFULLMIXINGCONTRIBUTIONS calculates the contributions of target
+%switching and homogenisation to the intoxification dynamics of a continuum
+%simulation with the specified settings.
+%
+%   INPUTS:
+%       - dx: spacing of continuum lattice
+%       - startA: Initial distribution of the attacker population
+%       - startS: Initial distribution of the sensitive population
+%       - atFrac: Overall fraction of attacker population
+%       - noConts: Number of contact bins to be included in simulation.
+%       Typically 5
+%       - noHitBins: Number of bins for labelling different numbers of
+%       hits.
+%       - noX, noY: Size of simulation lattice
+%       - lam: Intoxification rate
+%       - vs: List of velocities, used to define the mixing rates
+%       - diffDt: Timestep size between diffusion steps
+%       - tMax: Maximal simulation timepoint
+%       - hitEfficiency: Fractional decrease in the growth rate of
+%       sensitive cell upon application of a contact-dependent hit.
+%
+%   OUTPUTS:
+%       - base: The reduction in the growth of the sensitive
+%       population with no motility compared to if there were no attackers.
+%       Relative to 1-atFrac
+%       - contEx: The reduction in growth of the sensitive population
+%       relative to the base condition when contact exchange alone is active.
+%       - homo: The reduction in the growth of the sensitive population
+%       relative to the contact-exchange-only condition when both contact
+%       exchange and genotypic mixing are active.
+%
+%   Author: Oliver J. Meacock, 2023
+
 alphaD = 5.638; %Proportionality constant that converts velocity into cell diffusion rate
 noDiffTsteps = tMax/diffDt + 1;
 

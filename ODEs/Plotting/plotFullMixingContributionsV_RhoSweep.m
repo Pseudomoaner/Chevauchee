@@ -1,3 +1,8 @@
+%Generates and plots the contributions of each type of mixing to the
+%intoxification dynamics of continuum simulations with different starting
+%conditions. Firing rate is fixed, and we assume single-hit kinetics - the
+%parameters swept over are system velocity and seed cell density.
+
 clear all
 close all
 

@@ -1,10 +1,14 @@
+%Continuum simulation of the CDI combat system. Runs simulations of all
+%four inoculation densities with five different initial conditions,
+%sweeping over different values of the hit rates and toxin efficiencies.
+
 clear all
 close all
 
 rho0s = [1,0.1,0.01,0.001]*0.064;
 colours = [10,58,92;31,126,193;76,178,250;156,212,252]/255;
 
-lams = [0.02]; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
+lams = [0.001,0.002,0.005,0.01,0.02]; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
 hitEfficiencies = [0.01,0.02,0.05,0.1,0.2]; %The impact of each hit on the targeted cell's ongoing growth rate
 atFrac = 5.5/11; %Attacker fraction
 

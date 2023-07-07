@@ -1,3 +1,5 @@
+%Plots the results of diffusiveVariableVModelParamSweep.m
+
 clear all
 close all
 

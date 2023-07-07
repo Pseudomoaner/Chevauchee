@@ -1,4 +1,26 @@
 function dydt = diffusiveODEs(t,y,v,lam,noX,noY,noConts,noHitBins)
+%DIFFUSIVEODES is a function that is plugged into Matlabs ODE solvers to
+%simulate the Markovian components of the continuum model (i.e. target
+%switching and hit accumulation).
+%
+%   INPUTS:
+%       - t: Current time in the simulation (not used, but needed for
+%       interfacing with ODE solvers).
+%       - y: The current state of the system, consisting of all lattice
+%       sites, the attacker population and the sensitive populations
+%       labelled by attacker contacts and accumulated hits.
+%       - v: The current velocity of the system.
+%       - lam: The hit rate of the CDI system.
+%       - noX, noY: The size of the simulation lattice.
+%       - noConts: The number of contact bins to label sensitives by.
+%       Typically equal to 5.
+%       - noHitBins: The number of hit bins to label sensitives by.
+%
+%   OUTPUTS:
+%       - dydt: The rate of change of the various populations in each
+%       lattice site.
+%
+%   Author: Oliver J. Meacock, 2023
 
 alphE = 0.1033; %Encounter rate proportionality constant
 re = v*alphE;

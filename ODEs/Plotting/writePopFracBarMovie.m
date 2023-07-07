@@ -1,4 +1,14 @@
 function [] = writePopFracBarMovie(y,t,noConts,noHitBins)
+%WRITEPOPFRACBARMOVIE creates a movie showing the changes in the population
+%distribution of a given bin of a continuum simulation.
+%
+%   INPUTS:
+%       - y: The population distribution in the specified bin over time
+%       - t: The list of times at which the system was sampled.
+%       - noConts: The number of contact bins used (typically 5)
+%       - noHitBins: The number of hit accumulation bins used.
+%
+%   Author: Oliver J. Meacock, 2023
 
 interpy = interp1(t,y(:,2:end),2:2:max(t),'pchip');
 

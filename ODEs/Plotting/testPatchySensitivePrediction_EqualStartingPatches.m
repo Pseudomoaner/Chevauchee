@@ -1,5 +1,9 @@
-% clear all
-% close all
+%Plots the results of the QuasiS3R runs produced by
+%runQuasiS3rsweep_PropulsionForce_Patchy.m along with continuum simulations
+%initialised with the same seed distribution.
+
+clear all
+close all
 
 Root = '/home/omeacock/Documents/SPRruns/patchVelocityRuns';
 SPRbranch = 'SprResults_f_%f_rho0_%f.mat';

@@ -3,18 +3,7 @@ function [outA,outS] = initialisePatchyField(dx,xWidth,yHeight,seedDensity,seedF
 %attackers and sensitives distributed according to a Voronoi tesselation
 %over seed cells at the specified densities.
 %
-%   INPUTS:
-%       - dx: Spacing of the lattice sites
-%       - xWidth, yHeight: Size of the lattice grid, in physical units
-%       - seedDensity: The number of seed cells per unit area to be applied
-%       - seedFrac: The fraction of seed cells that should be members of
-%       the attacker population
 %   
-%   OUTPUTS:
-%       - [outA,outS]: The fraction of attacker (outA) and sensitive (outS)
-%       cells at each site in the lattice.
-%
-%   Author: Oliver J. Meacock, 2023
 
 us = 10; %Upsampling factor for high-resolution grid
 tol = 0.05; %Fractional tolerance for the final proportion of attackers to sensitives (must be within x percent of seedFrac)

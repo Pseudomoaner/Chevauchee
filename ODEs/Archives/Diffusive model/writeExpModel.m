@@ -1,7 +1,9 @@
 clear all
 close all
 
-%Uses the outputs of diffusiveVariableVModel.m
+%Uses the outputs of diffusiveVariableVModel.m to make a video of the
+%mixing attacker and sensitive populations in each of the four inoculation
+%density systems.
 
 OrCyCmap = [linspace(0.3,1,50)',linspace(0.6,0.5,50)',linspace(0.9,0.05,50)'];
 load('C:\Users\olijm\Desktop\SeanAna\popTcourse_4.mat')

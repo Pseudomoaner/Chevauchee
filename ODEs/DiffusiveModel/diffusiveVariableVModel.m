@@ -1,3 +1,6 @@
+%Continuum simulation of the CDI combat system. Runs simulations of all
+%four inoculation densities with five different initial conditions
+
 clear all
 close all
 
@@ -13,8 +16,8 @@ atFrac = 5.5/11; %Attacker fraction
 
 %Dimensional parameters
 dx = 10; %Granularity of coarse-grained lattice
-xWidth = 350; %780 = 624 um / 0.8 um
-yHeight = 350; %630 = 501 um / 0.8 um
+xWidth = 300; %780 = 624 um / 0.8 um
+yHeight = 300; %630 = 501 um / 0.8 um
 noX = xWidth/dx;
 noY = yHeight/dx;
 w = 1; %Cell width
