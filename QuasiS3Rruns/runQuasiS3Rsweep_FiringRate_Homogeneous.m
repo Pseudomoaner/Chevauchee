@@ -1,4 +1,5 @@
-%Code to generate IBM simulations for Fig. SX.
+%Code to generate IBM simulations for Fig. SX. Homogeneous starting
+%conditions, attacker fraction of 0.01, sweep over firing rates.
 clear all
 close all
 

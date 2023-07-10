@@ -1,4 +1,5 @@
-%Code to generate IBM simulations for Fig SX. 
+%Code to generate IBM simulations for Fig SX. Single population, contacts
+%detected and output, sweep over self-propulsion force.
 clear all
 close all
 

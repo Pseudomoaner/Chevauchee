@@ -1,5 +1,7 @@
 %Code to generate IBM and continuum simulations for Fig. 1.
-%Note you need both QuasiS3R and move-n-murder on your path 
+%Note you need both QuasiS3R and move-n-murder on your path - unlike other
+%QuasiS3R runs, this one also does appropriately-matched continuum
+%simulations.
 clear all
 close all
 

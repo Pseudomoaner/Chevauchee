@@ -1,4 +1,5 @@
-%Code to generate IBM simulations for Fig. SX.
+%Code to generate IBM simulations for Fig. SX. Homogeneous starting
+%conditions, variable hit types, sweep over self-propulsion forces.
 clear all
 close all
 

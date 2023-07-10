@@ -1,3 +1,6 @@
+%Generates Voronoi diagrams of input images, using sgemented cells as seed
+%points
+
 clear all
 close all
 

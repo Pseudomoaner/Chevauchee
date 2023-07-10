@@ -1,4 +1,5 @@
-%Code to generate IBM simulations for Fig. SX.
+%Code to generate IBM simulations for Fig. SX. Single population, sweep
+%over self-propulsion forces, large domain
 clear all
 close all
 
