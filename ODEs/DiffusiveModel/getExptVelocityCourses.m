@@ -17,7 +17,7 @@ function velCourses = getExptVelocityCourses(timeList)
 
 noiseMedianV = 0.003; %The measured value of the median PIV signal in frames, used to correct the measured sigal
 
-PVD = readtable('C:\Users\Olivier\OneDrive - Université de Lausanne\Simulations\Driveby\processedVelocityDataOld.csv');
+PVD = readtable('processedVelocityDataOld.csv');
 
 ExptNames = unique(PVD{:,4});
 
