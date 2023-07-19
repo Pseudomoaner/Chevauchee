@@ -1,4 +1,21 @@
 function fluoThresh = findFluoThresh(BFseg,GFPraw,RFPraw,GFPflat,RFPflat)
+%FINDFLUOTHRESH finds the threshold that best distinguishes two
+%fluorescently-labelled populations based on their intensities and a
+%brightfield segmentation. Assumes the threshold will be applied to a
+%log-transformed ratio of the two sets of intensity images.
+%
+%   INPUTS:
+%       -BFseg: The binary segmentation of the brightfield image, showing
+%       where all cells have been detected.
+%       -GFPraw, RFPraw: The raw fluorescence image for the two genotypes.
+%       -GFPflat, RFPflat: The flatfield-corrected versions of the
+%       fluorescence images.
+%
+%   OUTPUTS:
+%       -fluoThresh: The automatically-detected log-transformed
+%       fluorescence ratio that best splits the two populations.
+%
+%   Author: Oliver J. Meacock, 2023
 
 se = strel('disk',2); %Used for performing the morphological closure on the initial segmentation (gets rid of feathery bits)
 

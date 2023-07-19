@@ -1,4 +1,15 @@
 function BFseg = splitBFseries(BFstore)
+%SPLITBFSERIES converts a given series of brightfield images into binary
+%segmentations using a texture-based approach.
+%
+%   INPUTS:
+%       -BFstore: Array containing flatfield-corrected brightfield images.
+%       The third dimension contains different timepoints.
+%
+%   OUTPUTS:
+%       -BFseg: The binary segmentation results of binarisation of BFstore.
+%
+%   Author: Oliver J. Meacock, 2023
 
 textThresh = 2.5;
 neighSize = 5; %Approximate size of a single cell
