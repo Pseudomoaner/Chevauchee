@@ -4,7 +4,7 @@
 clear all
 close all
 
-rng(0) %Allows reproducible generation of the initial starting configurations
+rng(1) %Allows reproducible generation of the initial starting configurations
 
 rho0s = [1,0.1,0.01,0.001]*0.064;
 colours = [10,58,92;31,126,193;76,178,250;156,212,252]/255;
@@ -26,7 +26,7 @@ tMax = 1.5*3600;
 diffDt = 200; %Timestep between diffusion timesteps
 noDiffTsteps = (tMax-tMin)/diffDt;
 tList = linspace(tMin,tMax,noDiffTsteps+1);
-noReps = 5; %Must be set to three if the raw velocity timecourses are used (see next line)
+noReps = 10; %Must be set to three if the raw velocity timecourses are used (see next line)
 
 %Option 1: Use raw velocity timecourses
 % velLists = (getExptVelocityCourses(tList/3600))/0.8;
