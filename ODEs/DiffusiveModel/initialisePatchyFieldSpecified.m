@@ -3,6 +3,18 @@ function [outA,outS] = initialisePatchyFieldSpecified(dx,xWidth,yHeight,patchSpe
 %patches if the specifications for the seeding points are already known.
 %Typically this is because they have already been generated for the SPR
 %model.
+%
+%   INPUTS:
+%       - dx: Spacing of the lattice sites
+%       - xWidth, yHeight: Size of the lattice grid, in physical units
+%       - patchSpecs: A structure containing the locations and identities
+%       of the seed cells.
+%   
+%   OUTPUTS:
+%       - [outA,outS]: The fraction of attacker (outA) and sensitive (outS)
+%       cells at each site in the lattice.
+%
+%   Author: Oliver J. Meacock, 2023
 
 seedsX = patchSpecs.seedsX;
 seedsY = patchSpecs.seedsY;

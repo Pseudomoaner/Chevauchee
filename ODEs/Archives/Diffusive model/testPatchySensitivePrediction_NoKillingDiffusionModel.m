@@ -1,7 +1,7 @@
-clear all
-close all
+% clear all
+% close all
 
-SeanData = readmatrix('C:\Users\olijm\Desktop\SeanAna\hit_counts_Density_kill1000long_corrected.csv');
+SeanData = readmatrix('/home/omeacock/Documents/SPRruns/patchVelocityRuns/hit_counts_Density_kill1000long_corrected.csv');
 
 numSims = 20;
 tSteps = 201;
@@ -46,6 +46,8 @@ lams = lams(:,:,sortInds,:);
 rho0s = rho0s(:,:,sortInds,:);
 timecourses = timecourses(:,:,:,sortInds,:);
 vels = vels(:,:,sortInds,:);
+
+figure
 
 for atFracInd = 1:noAtFrac
     for lamInd = 1:noLam

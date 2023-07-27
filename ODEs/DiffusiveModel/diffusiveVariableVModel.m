@@ -1,37 +1,42 @@
+%Continuum simulation of the CDI combat system. Runs simulations of all
+%four inoculation densities with five different initial conditions
+
 clear all
 close all
+
+rng(1) %Allows reproducible generation of the initial starting configurations
 
 rho0s = [1,0.1,0.01,0.001]*0.064;
 colours = [10,58,92;31,126,193;76,178,250;156,212,252]/255;
 coloursMixes = [198, 159, 137;206, 45, 45;119, 225, 119]/255;
 
-lam = 0.003; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
-hitEfficiency = 0.1; %The impact of each hit on the targeted cell's ongoing growth rate
+lam = 0.005; %CDI firing rate (s^-1) - 0.001 corresponds to 3.6 firings / hr
+hitEfficiency = 0.02; %The impact of each hit on the targeted cell's ongoing growth rate
 atFrac = 5.5/11; %Attacker fraction
 
 %Dimensional parameters
 dx = 10; %Granularity of coarse-grained lattice
-xWidth = 340; %780 = 624 um / 0.8 um
-yHeight = 340; %630 = 501 um / 0.8 um
+xWidth = 300; %780 = 624 um / 0.8 um
+yHeight = 300; %630 = 501 um / 0.8 um
 noX = xWidth/dx;
 noY = yHeight/dx;
 w = 1; %Cell width
-tMin = -2*3600;
-tMax = 2*3600;
+tMin = -2.5*3600;
+tMax = 1.5*3600;
 diffDt = 200; %Timestep between diffusion timesteps
 noDiffTsteps = (tMax-tMin)/diffDt;
 tList = linspace(tMin,tMax,noDiffTsteps+1);
-noReps = 3; %Must be set to three if the raw velocity timecourses are used (see next line)
+noReps = 10; %Must be set to three if the raw velocity timecourses are used (see next line)
 
 %Option 1: Use raw velocity timecourses
-% velLists = (getExptVelocityCourses(tList/3600)-0.0018)/0.8;
+% velLists = (getExptVelocityCourses(tList/3600))/0.8;
 
 %Option 2: Use averaged velocity timecourses
-velLists = (repmat(mean(getExptVelocityCourses(tList/3600),3),1,1,noReps)-0.0018)/0.8;
+velLists = (repmat(mean(getExptVelocityCourses(tList/3600),3),1,1,noReps))/0.8;
 
 %Rate-related parameters
 alphaD = 5.638; %Proportionality constant that converts velocity into cell diffusion rate
-noHitBins = 11; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
+noHitBins = ceil(1/hitEfficiency) + 1; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
 noConts = 5; %Number of contacts made by each cell
 
 figure(1);
@@ -111,8 +116,6 @@ for i = 1:4
         CIs = (atPopSize./sensTcourse)./(atPopSize/sensPopSize);
 
         CIstore(i,r) = CIs(end);
-
-        %     save(sprintf('C:\\Users\\olijm\\Desktop\\SeanAna\\popTcourse_%i.mat',i),'popsTcourse','vmax','rho0','confTime')
     end
 end
 
@@ -177,7 +180,13 @@ end
 ax31.YScale = 'log';
 ax31.Box = 'on';
 ax31.LineWidth = 1.5;
-axis(ax31,[0.5,4.5,1,5e10])
+axis(ax31,[0.5,4.5,1,1e7])
 ax31.XTickLabel = string(rho0s/0.064);
 xlabel(ax31,'Inoculation density')
 ylabel(ax31,'Predicted comptitive index')
+
+re = velLists(:,:,1)*0.1033;
+D = velLists(:,:,1)*alphaD;
+
+%Save stuff
+save('C:\\Users\\Olivier\\OneDrive - Université de Lausanne\\Simulations\\Driveby\\Fig4Sims.mat','Jstore','CIstore','baseStore','contExStore','homoStore','re','D')

@@ -1,12 +1,14 @@
-%Implementation of the model described in Meacock et al 2020: Bacteria
-%solve the problem of crowding by moving slowly
+%Code to generate IBM and continuum simulations for Fig. 1.
+%Note you need both QuasiS3R and move-n-murder on your path - unlike other
+%QuasiS3R runs, this one also does appropriately-matched continuum
+%simulations.
 clear all
 close all
 
 %% File control and parameter definitions
 
 %Define file names etc.
-RootSim = 'C:\Users\olijm\Desktop\SeanAna\';
+RootSim = '/home/omeacock/Documents/SPRruns/patchVelocityRuns';
 outputSprMatName = 'SprResults_f_%f_rho0_%f.mat';
 outputContinuumMatName = 'ContinuumResults_f_%f_rho0_%f.mat';
 
@@ -33,6 +35,7 @@ cellSettings.type = 'LatticedXYCells'; %Type of rod initialization conditions th
 cellSettings.a = 4; %Aspect ratio of rods (relative to fieldSettings.lam)
 cellSettings.r = 0; %Reversal rate associated with each rod
 cellSettings.c = [1,0,0]; %RGB values for the colour you want to make the cells of population 1
+cellSettings.f = 1;
 cellSettings.fire = 0; %Firing rate of CDI system for this population
 cellSettings.pop = 's'; %Population label to specify which cells can kill each other.
 
@@ -44,6 +47,7 @@ patchSettings.reversalRate = 0;
 patchSettings.colour = [0,0.5,1];
 patchSettings.fireRate = 0.02;
 patchSettings.popLabel = 't';
+patchSettings.force = 1;
 patchSettings.tol = 0.05; %Tolerance for actual population fraction (real value guaranteed between seedFrac or fraction - for 'Voronoi' and 'Circle' patch types respectively - plus/minus fraction * tol)
 
 %Output settings
@@ -73,7 +77,7 @@ settlingSimTime = 200; %How long it will take for the simulation to settle into 
 targetSimTime = 1000; %Target motile simulation time
 contactFind = false; %Whether or not to return structures containing instantaneous cell-cell contact data
 
-rho0s = [0.016,0.004,0.001,0.00025];
+rho0s = [0.256,0.064];
 fs = [0,0.5,1,1.5,2];
 
 for rhoInd = 1:size(rho0s,2)
@@ -81,8 +85,6 @@ for rhoInd = 1:size(rho0s,2)
         f = fs(fInd);
         rho0 = rho0s(rhoInd);
 
-        cellSettings.f = f; %Pushing force applied by each rod
-        patchSettings.force = f;
         patchSettings.seedDensity = rho0;
 
         %% Part 0: Initialize field for this simulation (including burn-in)
@@ -123,6 +125,8 @@ for rhoInd = 1:size(rho0s,2)
 
         %Setup a patch in the centre of the domain containing the second population
         [intermediateField,patchSpecs] = makePatch(intermediateField,patchSettings);
+        
+        intermediateField.fCells = ones(size(intermediateField.xCells)) * f;
 
         %% Part 3: Do another (fully sampled) simulation for a longer period of time - only data from this simulation period will be stored
         fieldSettings.motileSteps = ceil(targetSimTime/(fieldSettings.motiledt*fieldSettings.FrameSkip))*fieldSettings.FrameSkip;
@@ -134,14 +138,14 @@ for rhoInd = 1:size(rho0s,2)
 
         [data,trackableData,toMappings,fromMappings] = processModelPCs(PCs,procSettings,fieldSettings);
 
-        fullSprMatOut = fullfile(RootSim,sprintf(outputSprMatName,f,rho0);
+        fullSprMatOut = fullfile(RootSim,sprintf(outputSprMatName,f,rho0));
         save(fullSprMatOut,'data','trackableData','toMappings','fromMappings','fieldSettings','cellSettings','procSettings','samplingRate','startMotileDt','hitNos','endField','contactSet')
     
         %% Part 5: Run equivalent continuum model with same input parameters and starting configuration
         dX = 10; %Size of the coarse-grained grid (in cell widths)
         alphaD = 5.638; %Proportionality constant that converts velocity into cell diffusion rate
         noHitBins = 6; %Number of different hit categories to take into consideration, from 0 to noHitBins-1 plus
-        noConts = 6; %Average number of contacts made by each cell to neighbours
+        noConts = 5; %Average number of contacts made by each cell to neighbours
         tSteps = targetSimTime/fieldSettings.dt;
 
         v = mean(arrayfun(@(x)mean(x.vmag),data));
@@ -149,7 +153,7 @@ for rhoInd = 1:size(rho0s,2)
         noX = round(fieldSettings.xWidth/dX);
         noY = round(fieldSettings.yHeight/dX);
 
-        [startA,startS] = initialisePatchyFieldSpecified(dx,fieldSettings.xWidth,fieldSettings.yHeight,patchSpecs);
+        [startA,startS] = initialisePatchyFieldSpecified(dX,fieldSettings.xWidth,fieldSettings.yHeight,patchSpecs);
         pops = cat(3,startA,startS,zeros(noY,noX,noHitBins*(noConts+1)-1)); %Create population array, attackers in first layer, unhit sensitives in second)
 
         %Allow the system to equilibrate contact compartments without killing or
@@ -160,7 +164,7 @@ for rhoInd = 1:size(rho0s,2)
         popsTcourse = pops;
 
         %Outer loop - macroscopic mixing (diffusion)
-        for t = 1:(tSteps-1)
+        for t = 1:tSteps
             %Run diffusion of each of the populations separately
             for i = 1:size(pops,3)
                 pops(:,:,i) = diffTimestepCN(pops(:,:,i),fieldSettings.dt,dX,alphaD*v,true);
@@ -174,6 +178,6 @@ for rhoInd = 1:size(rho0s,2)
         end
 
         fullContinuumMatOut = fullfile(RootSim,sprintf(outputContinuumMatName,f,rho0));
-        save(fullContinuumMatOut, 'popsTcourse')
+        save(fullContinuumMatOut, 'popsTcourse', 'patchSpecs')
     end
 end

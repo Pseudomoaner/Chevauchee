@@ -1,3 +1,5 @@
+%Script that calculates the packing fractions and intermixing indices for a
+%specified dataset.
 clear all
 close all
 

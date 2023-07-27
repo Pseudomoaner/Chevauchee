@@ -1,4 +1,14 @@
 function [] = plotPopFracBars(y,contNo,hitBinNo,ax)
+%PLOTPOPFRACBARS generates a stacked bar chart representation of the
+%populations present within a given lattice site.
+%
+%   INPUTS:
+%       -y: List of populations associated with a given lattice site.
+%       -contNo: Number of contact bins in simulation
+%       -hitBinNo: Number of hit bins in simulation
+%       -ax: Active axes for visualisation to be inserted into.
+%
+%   Author: Oliver J. Meacock, 2023
 
 y = reshape(y,[hitBinNo,contNo+1])';
 
