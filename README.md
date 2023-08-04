@@ -1,7 +1,7 @@
 # Chevauchée
 ### Modelling and image analysis approaches for unpicking motility-enhanced CDI
 
-This repository contains all code necessary to reproduce the results presented in the manuscript 'Attacking on the move: cell motility greatly empowers bacterial contact weapons', by Sean C. Booth, Oliver J. Meacock and Kevin R. Foster.
+This repository contains all code necessary to reproduce the results presented in the manuscript 'Cell motility greatly empowers bacterial contact weapons', by Sean C. Booth, Oliver J. Meacock and Kevin R. Foster.
 
 'Donut' and 'plotSpread' are packages used for plotting purposes, available on Matlab central:
 https://ch.mathworks.com/matlabcentral/fileexchange/37105-plot-spread-points-beeswarm-plot
