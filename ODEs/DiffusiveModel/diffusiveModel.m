@@ -61,7 +61,7 @@ for t = 1:noDiffTsteps
     end
 
     %Inner loop - microscopic mixing (contact swapping)
-    [t,pops] = ode45(@(t,y)diffusiveODEs(t,y,0,lam,noX,noY,noConts,noHitBins),[0,diffDt],pops(:));
+    [t,pops] = ode45(@(t,y)diffusiveODEs(t,y,v,lam,noX,noY,noConts,noHitBins),[0,diffDt],pops(:));
     pops = pops(end,:);
     pops = reshape(pops,noY,noX,noHitBins*(noConts+1) + 1);
     popsTcourse = cat(4,popsTcourse,pops);
